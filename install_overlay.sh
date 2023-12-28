@@ -10,5 +10,5 @@ sudo git push --set-upstream dummy
 git remote -v
 popd
 
-sudo sed -i'' "1s|^|file://$PREFIX/share/$OVERLAY\n|" "$PREFIX/etc/macports/sources.conf"
+sudo sed -i '' "1s|^|file://$PREFIX/share/$OVERLAY\n|" "$PREFIX/etc/macports/sources.conf"
 sudo port -v sync
