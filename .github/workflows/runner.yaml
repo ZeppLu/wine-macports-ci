@@ -1,0 +1,42 @@
+name: wine-macports
+
+on:
+  workflow_dispatch:
+
+env:
+  CC: clang
+  CXX: false  # no c++ code
+
+jobs:
+  macos:
+    runs-on: macos-12
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install MacPorts
+        run: bash install_macports.sh
+
+      - name: Adding MacPorts into $PATH
+        run: |
+          set -x
+          echo "/opt/local/bin" >> $GITHUB_PATH
+          echo "/opt/local/sbin" >> $GITHUB_PATH
+
+      - name: Install MacPorts-Wine overlay
+        run: bash install_overlay.sh
+
+      - name: Build Wine
+        run: bash build_wine.sh
+        
+      - name: Get Wine package path
+        run: |
+          set -x
+          echo "WINEPKG=$(port -q location wine-devel)" >> $GITHUB_ENV
+
+      - name: Upload Wine
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ env.WINEPKG }}
+          path: ${{ env.WINEPKG }}
