@@ -16,7 +16,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Install MacPorts
-        run: bash install_macports.sh
+        run: bash -ex install_macports.sh
 
       - name: Adding MacPorts into $PATH
         run: |
@@ -25,10 +25,10 @@ jobs:
           echo "/opt/local/sbin" >> $GITHUB_PATH
 
       - name: Install MacPorts-Wine overlay
-        run: bash install_overlay.sh
+        run: bash -ex install_overlay.sh
 
       - name: Build Wine
-        run: bash build_wine.sh
+        run: sudo port -v install wine-devel
         
       - name: Get Wine package path
         run: |
