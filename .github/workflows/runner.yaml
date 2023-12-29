@@ -9,7 +9,14 @@ env:
 
 jobs:
   macos:
-    runs-on: macos-12
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - os: macos-11
+          - os: macos-12
+          - os: macos-13
+    runs-on: ${{ matrix.config.os }}
 
     steps:
       - name: Checkout
@@ -35,10 +42,11 @@ jobs:
       - name: Get Wine package path
         run: |
           set -x
-          echo "WINEPKG=$(port -q location wine-devel)" >> $GITHUB_ENV
+          echo "WINEPATH=$(port -q location wine-devel)" >> $GITHUB_ENV
+          echo "WINEPKG=$(basename $(port -q location wine-devel) .tbz2)" >> $GITHUB_ENV
 
       - name: Upload Wine
         uses: actions/upload-artifact@v3
         with:
-          name: "wine-devel.tar.bz2"
-          path: ${{ env.WINEPKG }}
+          name: ${{ env.WINEPKG }}.${{ matrix.config.os }}.tar.bz2
+          path: ${{ env.WINEPATH }}
